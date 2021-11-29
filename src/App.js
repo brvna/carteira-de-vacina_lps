@@ -1,25 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useContext, useEffect, useState } from "react";
+import { Welcome } from "./App.style";
+import List from "./components/List";
+import Search from "./components/Search";
+import { PeopleContext } from "./contexts/PeopleContext";
 
-function App() {
+const App = () => {
+  const { peoples, getPeoples, setDetailPeople } = useContext(PeopleContext);
+  const [search, setSearch] = useState(null);
+
+  useEffect(() => {
+    if (!peoples) getPeoples();
+  });
+
+  const searchPeople = (term) => {
+    const result = peoples.filter((item) =>
+      item.name.toLowerCase().includes(term.toLowerCase())
+    );
+    setSearch(result);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Welcome>
+        <header>Not so long time ago, in a galaxy not so far away...</header>
+      </Welcome>
+      <Search searchPeople={searchPeople} />
+      {peoples ? (
+        <List
+          peoples={search ? search : peoples}
+          setDetailPeople={setDetailPeople}
+        />
+      ) : null}
+    </>
   );
-}
+};
 
 export default App;
